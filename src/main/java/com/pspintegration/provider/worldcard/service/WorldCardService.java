@@ -1,14 +1,18 @@
-package com.pspintegration.provider.worldcard;
+package com.pspintegration.provider.worldcard.service;
 
+import com.pspintegration.web.WorldCardAuthRequest;
+import com.pspintegration.web.WorldCardAuthResponse;
 import com.pspintegration.provider.worldcard.dto.BillingAddress;
 import com.pspintegration.provider.worldcard.dto.Customer;
 import com.pspintegration.provider.worldcard.dto.Order;
+import com.pspintegration.web.WorldCardCallbackRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -20,15 +24,19 @@ public class WorldCardService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public WorldCardResponse authenticate() {
+    public WorldCardAuthResponse authenticate() {
         var uri = URI.create(URL);
         var worldCardRequest = buildRequest();
-        var worldCardRequestResponseEntity = restTemplate.postForEntity(uri, worldCardRequest, WorldCardResponse.class);
+        var worldCardRequestResponseEntity = restTemplate.postForEntity(uri, worldCardRequest, WorldCardAuthResponse.class);
 
         return worldCardRequestResponseEntity.getBody();
     }
 
-    private WorldCardRequest buildRequest() {
+    public String handleCallback(WorldCardCallbackRequest callback) {
+        return null;
+    }
+
+    private WorldCardAuthRequest buildRequest() {
         var sha1Hash = Strings.EMPTY;
 
         try {
@@ -37,12 +45,12 @@ public class WorldCardService {
             log.error(e.getMessage());
         }
 
-        return new WorldCardRequest(
+        return new WorldCardAuthRequest(
             "6d13e2fa-539b-11ed-8193-b6d71ef108d9",
                 "purchase",
                 List.of("card"),
                 new Order(
-                        "order-1234", "0.19", "USD", "Important gift"),
+                        "order-1234", new BigDecimal("0.19"), "USD", "Important gift"),
                 "https://example.com/cancel",
                 "https://example.com/success",
                 new Customer(
