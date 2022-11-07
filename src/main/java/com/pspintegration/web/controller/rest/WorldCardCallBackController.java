@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -29,10 +27,12 @@ public class WorldCardCallBackController {
             },
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> callBack(@RequestBody MultiValueMap<String, String> callback) {
-//        worldCardService.handleCallback(callback);
+        worldCardService.handleCallback(callback);
 
-        callback.forEach((key, value) ->
-                log.info(key + " : " + value));
+//        log.info(callback.id());
+
+//        callback.forEach((key, value) ->
+//                log.info(key + " : " + value));
 
         return ResponseEntity.ok("GhjjhGGG");
     }

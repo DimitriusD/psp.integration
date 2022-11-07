@@ -1,15 +1,16 @@
 package com.pspintegration.provider.worldcard.service;
 
-import com.pspintegration.web.WorldCardAuthRequest;
-import com.pspintegration.web.WorldCardAuthResponse;
+import com.pspintegration.provider.worldcard.converter.CallbackDTOConverter;
 import com.pspintegration.provider.worldcard.dto.BillingAddress;
 import com.pspintegration.provider.worldcard.dto.Customer;
 import com.pspintegration.provider.worldcard.dto.Order;
-import com.pspintegration.web.WorldCardCallbackRequest;
+import com.pspintegration.web.WorldCardAuthRequest;
+import com.pspintegration.web.WorldCardAuthResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
@@ -32,8 +33,10 @@ public class WorldCardService {
         return worldCardRequestResponseEntity.getBody();
     }
 
-    public String handleCallback(WorldCardCallbackRequest callback) {
-        return null;
+    public void handleCallback(MultiValueMap<String, String> callback) {
+        var callbackDTO = CallbackDTOConverter.toDTO(callback);
+
+        log.warn("DTO: " + callbackDTO);
     }
 
     private WorldCardAuthRequest buildRequest() {
